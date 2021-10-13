@@ -84,6 +84,7 @@ h2 .count-tasks.done{
 .header .container .form input:focus,
 .header .container .form textarea:focus{
     border: 1px solid #12c0dd;
+    box-shadow: 0px 0px 5px 2px #11a8dc8a;
 }
 .header .container .form textarea{
     margin-top: 12px;
@@ -104,9 +105,11 @@ h2 .count-tasks.done{
     cursor: pointer;
 }
 
-.btn:not([disabled]):hover {
+.btn:not([disabled]):hover,
+.btn:not([disabled]):focus{
     background-color: #0dd6f8;
     border-color: #0dd6f8;
+    box-shadow: 0px 0px 5px 2px #11a8dc8a;
 }
 
 button:disabled,
@@ -127,7 +130,7 @@ button[disabled]{
     background-color: #fff;
     transition: 0.6s;
 }
-.task-list li:hover,
+.task-list li:not(.disabled):hover,
 .task-list li.active{
     opacity: 1!important;
     background: whitesmoke;
@@ -175,13 +178,13 @@ input[type="checkbox"] + span {
     padding: 0;
     margin: 16px 16px 16px 0;
     min-height: 24px;
+    height: 24px;
     font-size: 16px;
     font-weight: 300;
     line-height: 24px;
     resize: none;
 }
 .invalid-input{
-
     border-color: #e41e41!important;
 }
 
@@ -210,6 +213,13 @@ input[type="checkbox"] + span {
     border-color: #535151;
     cursor: pointer;
 }
+.btn-remove:not([disabled]):focus,
+.btn-edit:not([disabled]):focus,
+.btn-cancel:not([disabled]):focus,
+input[type="checkbox"]:focus + span::before{
+    box-shadow: 0px 0px 5px 2px #11a8dc8a;
+}
+
 .description{
     white-space: pre-line;
     margin: 16px 16px 16px 0;
@@ -250,7 +260,7 @@ input[type="checkbox"]:not(:checked){
     height: 20px;
     top: calc(50% - 10px);
     left: 0;
-    cursor:pointer;
+    /*cursor:pointer;*/
 }
 input[type="checkbox"]:checked + span,
 input[type="checkbox"]:not(:checked) + span{
@@ -301,4 +311,10 @@ input[type="checkbox"]:not(:checked) + span::after{
     left: 4px;
     top: calc(50% - 6px);
     background-color: #7d25a9;
+}
+input[type="checkbox"]:not(:disabled){
+    cursor: pointer;
+}
+input[type="checkbox"]:disabled + span::before{
+    opacity: 0.5;
 }

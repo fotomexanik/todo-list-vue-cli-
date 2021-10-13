@@ -1,9 +1,14 @@
 <template>
-  <li >
+  <li :class=" editingEnabled ? 'disabled' : '' ">
     <template v-if="task.status">
       <div class="contents">
         <div class="checkbox-group">
-          <input type="checkbox" @change="task.status = !task.status" checked>
+          <input
+            type="checkbox"
+            @change="task.status = !task.status"
+            :disabled="editingEnabled"
+            checked
+            >
           <span class="title">{{index+1}}. {{task.title}}</span>
         </div>
         <p class="description"> {{task.description}} </p>
@@ -12,6 +17,7 @@
         <button
           class="btn-remove w-100"
           @click="$emit('remove', task)"
+          :disabled="editingEnabled"
         >Удалить</button>
 <!--        <button class="btn-remove w-100" v-on:click="$emit('remove', task)">Удалить</button>-->
       </div>
@@ -21,7 +27,10 @@
       <p class="tip" v-if="task.isEditing">Редактирование</p>
       <div class="contents" v-if="!task.isEditing">
         <div class="checkbox-group">
-          <input type="checkbox" @change="task.status = !task.status">
+          <input
+            type="checkbox"
+            @change="task.status = !task.status"
+            :disabled="editingEnabled">
           <span class="title">{{index+1}}. {{task.title}}</span>
         </div>
         <p class="description" v-bind:id="'description_'+ index"> {{task.description}} </p>
@@ -32,7 +41,9 @@
           <span class="title">{{index+1}}.</span>
           <input
             v-model="newTitle"
-            :class=" newTitle ===''? 'invalid-input' : '' "
+            @keypress.enter="saveEdit(task)"
+            @keyup.27="toggleEdit(task)"
+            :class="newTitle.trim() ===''? 'invalid-input' : '' "
             type="text"
             placeholder="Название задачи"
             class="edit-title"
@@ -41,8 +52,10 @@
         <div class="input-group d-flex">
           <textarea
             v-model="newDescription"
-            rows="3"
+            @keyup.27="toggleEdit(task)"
+            @input ="setHeightTextarea"
             placeholder="Описание задачи"
+            row="1"
             class="edit-description"
           ></textarea>
         </div>
@@ -57,7 +70,7 @@
         >Изменить</button>
         <button
           v-if="task.isEditing"
-          :disabled="newTitle === '' || newTitle === task.title && newDescription === task.description  "
+          :disabled="newTitle.trim() === '' || newTitle === task.title && newDescription === task.description  "
           @click="saveEdit(task)"
           class="btn-cancel w-100"
         >Сохранить</button>
@@ -68,6 +81,7 @@
         >Отменить</button>
         <button
           v-if="!task.isEditing"
+          :disabled="editingEnabled"
           @click="$emit('remove')"
           class="btn-remove w-100"
         >Удалить</button>
@@ -100,6 +114,7 @@ export default {
     },
     toggleEdit (editTask) {
       console.log('TodoItem - toggleEdit ')
+      console.log(editTask.isEditing)
       if (editTask.isEditing) {
         // console.log('сброс title и description')
         this.setNewParams('', '')
@@ -109,12 +124,33 @@ export default {
       }
       // переключение режима реддактироания
       this.$emit('toggle-edit')
+      // console.log(editTask.isEditing)
+      if (editTask.isEditing) {
+        this.$nextTick(function () {
+          // теперь DOM обновлён
+          const input = document.querySelector('.edit-title')
+          const textarea = document.querySelector('.edit-description')
+          input.focus()
+          textarea.style.height = textarea.scrollHeight + 'px'
+          textarea.style.overflowY = 'hidden'
+        })
+      }
     },
     saveEdit (editTask) {
-      console.log('TodoItem - saveEdit')
-      this.$emit('save-edit', editTask, this.newTitle, this.newDescription)
-      this.setNewParams('', '')
-      this.$emit('toggle-edit')
+      // console.log('TodoItem - saveEdit')
+      const newTitle = this.newTitle.trim()
+      const newDescription = this.newDescription.trim()
+      if (newTitle !== '') {
+        this.$emit('save-edit', editTask, newTitle, newDescription)
+        this.setNewParams('', '')
+        this.$emit('toggle-edit')
+      }
+    },
+    setHeightTextarea (event) {
+      // console.log('setHeightTextarea')
+      const textarea = event.target
+      textarea.style.height = textarea.scrollHeight + 'px'
+      // textarea.style.overflowY = 'hidden'
     }
 
   }

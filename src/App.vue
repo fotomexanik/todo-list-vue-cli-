@@ -5,8 +5,19 @@
         <div class="logo">ToDo List</div>
         <div class="form">
           <div class="input-group">
-            <input type="text" v-model="valueTitle" @keypress.enter="addTask" placeholder="Название задачи">
-            <textarea type="text" v-model="valueDescription"  rows="4" placeholder="Описание задачи" :disabled="valueTitle === ''"></textarea>
+            <input
+              type="text"
+              v-model="valueTitle"
+              @keypress.enter="addTask"
+              :disabled="editingEnabled"
+              placeholder="Название задачи"
+            >
+            <textarea
+              v-model="valueDescription"
+              :disabled="valueTitle === '' ||  editingEnabled"
+              rows="4"
+              placeholder="Описание задачи"
+            ></textarea>
           </div>
           <div class="btn-group">
             <button class="btn" id="btnAddTask" @click="addTask" :disabled="editingEnabled">Добавить задачу</button>
@@ -47,6 +58,7 @@
             :task="task"
             :index="index"
             :key="task.id"
+            :editingEnabled="editingEnabled"
             :id="'doneTaskEl_' + index"
             @remove="removeTask(task)"
           />
@@ -62,7 +74,8 @@ import TodoItem from '@/components/TodoItem'
 const fakeData = [
   {
     title: 'новая Задача 1. Работа с классами и стилями',
-    description: 'Часто возникает необходимость динамически изменять CSS-классы и inline-стили элементов в зависимости от состояния приложения. Поскольку и то и другое атрибуты, мы можем использовать v-bind: необходимо лишь вычислить итоговую строку при помощи выражения. ',
+    description: '1. Часто возникает необходимость динамически изменять CSS-классы и inline-стили элементов в зависимости от состояния приложения. \n' +
+      '2. Поскольку и то и другое атрибуты, мы можем использовать v-bind: необходимо лишь вычислить итоговую строку при помощи выражения. ',
     id: 1,
     isEditing: false,
     status: false
@@ -76,7 +89,10 @@ const fakeData = [
   },
   {
     title: 'новая Задача 3',
-    description: 'Описание задачи3',
+    description: '1) Пункт1\n' +
+      '2) Пункт1\n' +
+      '3) Пункт1\n' +
+      '4) Пункт1\n',
     id: 3,
     isEditing: false,
     status: false
@@ -97,7 +113,9 @@ const fakeData = [
   },
   {
     title: 'выполненая Задача 3',
-    description: 'Описание задачи3 Описание задачи3 Описание задачи3',
+    description: 'Описание задачи3\n' +
+      'Описание задачи3\n' +
+      'Описание задачи3',
     id: 53,
     isEditing: false,
     status: true
@@ -124,14 +142,14 @@ export default {
   },
   computed: {
     currentDoList () {
-      return this.todolist.filter(el => el.status === false)
+      return this.todolist.filter(el => !el.status)
     },
     doneDoList () {
-      return this.todolist.filter(el => el.status === true)
+      return this.todolist.filter(el => el.status)
     },
     editingEnabled () {
-      // return this.todolist.some(el => el.isEditing)
-      return this.todolist.filter(el => el.isEditing).length > 0
+      return this.todolist.some(el => el.isEditing)
+      // return this.todolist.filter(el => el.isEditing).length > 0
     }
   },
   methods: {
@@ -161,19 +179,11 @@ export default {
       editTask.isEditing = !editTask.isEditing
     },
     saveEdit (editTask, newTitle, newDescription) {
-      console.log('saveEdit ' + 'editTaskID = ' + editTask.id + '//' + 'newTitle = ' + newTitle + '//' + 'newDescription = ' + newDescription)
+      // console.log('saveEdit ' + 'editTaskID = ' + editTask.id + '//' + 'newTitle = ' + newTitle + '//' + 'newDescription = ' + newDescription)
       if (newTitle !== '') {
         editTask.title = newTitle
         editTask.description = newDescription
       }
-    },
-    setHeightTextarea (id) {
-      // todo Доделать пересчет высоты
-      console.log('setHeightTextarea')
-      // const elDescription = document.getElementById(`description_${index}`)
-      const textarea = document.getElementById(`editDescription_${id}`)
-      // textarea.setAttribute('style', 'height:' + (elDescription.scrollHeight) + 'px;overflow-y:hidden;')
-      textarea.addEventListener('input', () => { textarea.style.height = (textarea.scrollHeight) + 'px' }, false)
     }
   }
 }
