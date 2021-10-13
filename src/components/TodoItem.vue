@@ -31,8 +31,7 @@
         <div class="input-group d-flex">
           <span class="title">{{index+1}}.</span>
           <input
-            :value="newTitle" @input="$emit('update:newTitle', $event.target.value)"
-            :id="'editTitle_' + index"
+            v-model="newTitle"
             :class=" newTitle ===''? 'invalid-input' : '' "
             type="text"
             placeholder="Название задачи"
@@ -41,8 +40,7 @@
         </div>
         <div class="input-group d-flex">
           <textarea
-            :value="newDescription" @input="$emit('update:newDescription', $event.target.value)"
-            :id="'editDescription_' + task.id"
+            v-model="newDescription"
             rows="3"
             placeholder="Описание задачи"
             class="edit-description"
@@ -54,18 +52,18 @@
         <button
           v-if="!task.isEditing"
           :disabled="editingEnabled"
-          @click="$emit('toggle-edit')"
+          @click="toggleEdit(task)"
           class="btn-edit w-100"
         >Изменить</button>
         <button
           v-if="task.isEditing"
-          :disabled="newTitle === '' "
-          @click="$emit('save-edit')"
+          :disabled="newTitle === '' || newTitle === task.title && newDescription === task.description  "
+          @click="saveEdit(task)"
           class="btn-cancel w-100"
         >Сохранить</button>
         <button
           v-if="task.isEditing"
-          @click="$emit('toggle-edit')"
+          @click="toggleEdit(task)"
           class="btn-cancel w-100"
         >Отменить</button>
         <button
@@ -86,9 +84,39 @@ export default {
       required: true
     },
     index: Number,
-    newTitle: String,
-    newDescription: String,
     editingEnabled: Boolean
+  },
+  data () {
+    return {
+      newTitle: '',
+      newDescription: ''
+    }
+  },
+  methods: {
+    setNewParams (title, description) {
+      console.log('setNewParams')
+      this.newTitle = title
+      this.newDescription = description
+    },
+    toggleEdit (editTask) {
+      console.log('TodoItem - toggleEdit ')
+      if (editTask.isEditing) {
+        // console.log('сброс title и description')
+        this.setNewParams('', '')
+      } else {
+        // console.log('копируем данные в newTitle и newDescription')
+        this.setNewParams(editTask.title, editTask.description)
+      }
+      // переключение режима реддактироания
+      this.$emit('toggle-edit')
+    },
+    saveEdit (editTask) {
+      console.log('TodoItem - saveEdit')
+      this.$emit('save-edit', editTask, this.newTitle, this.newDescription)
+      this.setNewParams('', '')
+      this.$emit('toggle-edit')
+    }
+
   }
 }
 

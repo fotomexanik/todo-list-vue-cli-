@@ -28,13 +28,11 @@
             :index="index"
             :key="task.id"
             :editingEnabled="editingEnabled"
-            :newTitle.sync="newTitle"
-            :newDescription.sync="newDescription"
             :id="'currentTaskEl_' + index"
             :class="{active : task.isEditing }"
             @remove="removeTask(task)"
             @toggle-edit="toggleEdit(task)"
-            @save-edit="saveEdit(task)"
+            @save-edit="saveEdit"
           />
         </ul>
       </template>
@@ -121,8 +119,6 @@ export default {
     return {
       valueTitle: '',
       valueDescription: '',
-      newTitle: '',
-      newDescription: '',
       todolist: fakeData
     }
   },
@@ -134,7 +130,8 @@ export default {
       return this.todolist.filter(el => el.status === true)
     },
     editingEnabled () {
-      return this.todolist.filter(el => el.isEditing === true).length > 0
+      // return this.todolist.some(el => el.isEditing)
+      return this.todolist.filter(el => el.isEditing).length > 0
     }
   },
   methods: {
@@ -159,38 +156,15 @@ export default {
         this.todolist = this.todolist.filter(todo => todo.id !== task.id)
       }
     },
-    setNewParams (title, description) {
-      console.log('setNewParams')
-      this.newTitle = title
-      this.newDescription = description
-    },
-    resetNewParams () {
-      console.log('resetNewParams')
-      this.newTitle = ''
-      this.newDescription = ''
-    },
     toggleEdit (editTask) {
-      console.log('toggleEdit ')
+      console.log('toggleEdit - переключение режима редактирования')
       editTask.isEditing = !editTask.isEditing
-      if (editTask.isEditing) {
-        // включен режим редактирования
-        console.log('toggleEdit - включен режим редактирования')
-        this.setNewParams(editTask.title, editTask.description)
-        // document.getElementById(`editTitle_${index}`).focus(); // TODO не работает focus???
-        // this.setHeightTextarea(editTask.id) todo Доделать пересчет высоты
-      } else {
-        console.log('toggleEdit - выключаем режим редактирования сброс изменений')
-        // выключаем режим редактирования сброс изменений
-        this.resetNewParams()
-      }
     },
-    saveEdit (editTask) {
-      console.log('saveEdit')
-      if (this.newTitle !== '') {
-        editTask.title = this.newTitle
-        editTask.description = this.newDescription
-        editTask.isEditing = !editTask.isEditing
-        this.resetNewParams()
+    saveEdit (editTask, newTitle, newDescription) {
+      console.log('saveEdit ' + 'editTaskID = ' + editTask.id + '//' + 'newTitle = ' + newTitle + '//' + 'newDescription = ' + newDescription)
+      if (newTitle !== '') {
+        editTask.title = newTitle
+        editTask.description = newDescription
       }
     },
     setHeightTextarea (id) {
