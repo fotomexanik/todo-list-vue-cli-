@@ -180,7 +180,7 @@ input[type="checkbox"] + span {
     line-height: 24px;
     resize: none;
 }
-.border-red{
+.invalid-input{
 
     border-color: #e41e41!important;
 }
@@ -248,7 +248,7 @@ input[type="checkbox"]:not(:checked){
     opacity: 0;
     width: 20px;
     height: 20px;
-    top: 6px;
+    top: calc(50% - 10px);
     left: 0;
     cursor:pointer;
 }
