@@ -31,7 +31,7 @@
         <div class="input-group d-flex">
           <span class="title">{{index+1}}.</span>
           <input
-            v-model="newTitle"
+            :value="newTitle" @input="$emit('update:newTitle', $event.target.value)"
             :id="'editTitle_' + index"
             :class=" newTitle ===''? 'invalid-input' : '' "
             type="text"
@@ -41,7 +41,7 @@
         </div>
         <div class="input-group d-flex">
           <textarea
-            v-model="newDescription"
+            :value="newDescription" @input="$emit('update:newDescription', $event.target.value)"
             :id="'editDescription_' + task.id"
             rows="3"
             placeholder="Описание задачи"
