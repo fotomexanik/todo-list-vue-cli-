@@ -60,7 +60,7 @@
             :key="task.id"
             :editingEnabled="editingEnabled"
             :id="'doneTaskEl_' + index"
-            @remove="removeTask(task)"
+            @remove-task="removeTask(task)"
           />
         </ul>
       </template>

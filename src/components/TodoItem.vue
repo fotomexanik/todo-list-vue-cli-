@@ -14,12 +14,12 @@
         <p class="description"> {{task.description}} </p>
       </div>
       <div class="btn-group">
-        <button
-          class="btn-remove w-100"
-          @click="$emit('remove', task)"
+        <BtnAction
           :disabled="editingEnabled"
-        >Удалить</button>
-<!--        <button class="btn-remove w-100" v-on:click="$emit('remove', task)">Удалить</button>-->
+          :btnName="'Удалить'"
+          :evtName="'remove-task'"
+          @remove-task="$emit('remove-task')"
+        ></BtnAction>
       </div>
     </template>
 
@@ -31,7 +31,7 @@
             type="checkbox"
             @change="task.status = !task.status"
             :disabled="editingEnabled">
-          <span class="title">{{index+1}}. {{task.title}}</span>
+          <span class="title" @dblclick="!editingEnabled ? toggleEdit(task) : '' ">{{index+1}}. {{task.title}}</span>
         </div>
         <p class="description" v-bind:id="'description_'+ index"> {{task.description}} </p>
       </div>
@@ -39,59 +39,69 @@
       <div class="contents edit-task" v-if="task.isEditing">
         <div class="input-group d-flex">
           <span class="title">{{index+1}}.</span>
-          <input
-            v-model="newTitle"
-            @keypress.enter="saveEdit(task)"
-            @keyup.27="toggleEdit(task)"
-            :class="newTitle.trim() ===''? 'invalid-input' : '' "
-            type="text"
-            placeholder="Название задачи"
-            class="edit-title"
-          >
+            <InputEdit
+              :newTitle="newTitle"
+              @update:newTitle="newTitle = $event"
+              @save-edit="saveEdit(task)"
+              @toggle-edit="toggleEdit(task)"
+              :class="newTitle.trim() ===''? 'invalid-input' : '' "
+              class="edit-title"
+              placeholder="Название задачи"
+            ></InputEdit>
         </div>
         <div class="input-group d-flex">
-          <textarea
-            v-model="newDescription"
-            @keyup.27="toggleEdit(task)"
-            @input ="setHeightTextarea"
+          <TextareaEdit
+            :newDescription="newDescription"
+            @update:newDescription="newDescription = $event"
+            @toggle-edit="toggleEdit(task)"
+            class="edit-description"
             placeholder="Описание задачи"
             row="1"
-            class="edit-description"
-          ></textarea>
+          ></TextareaEdit>
         </div>
       </div>
 
       <div class="btn-group">
-        <button
+        <BtnAction
           v-if="!task.isEditing"
           :disabled="editingEnabled"
-          @click="toggleEdit(task)"
-          class="btn-edit w-100"
-        >Изменить</button>
-        <button
+          :btnName="'Изменить'"
+          :evtName="'toggle-edit'"
+          @toggle-edit="toggleEdit(task)"
+        ></BtnAction>
+        <BtnAction
           v-if="task.isEditing"
           :disabled="newTitle.trim() === '' || newTitle === task.title && newDescription === task.description  "
-          @click="saveEdit(task)"
-          class="btn-cancel w-100"
-        >Сохранить</button>
-        <button
+          :btnName="'Сохранить'"
+          :evtName="'save-edit'"
+          @save-edit="saveEdit(task)"
+        ></BtnAction>
+        <BtnAction
           v-if="task.isEditing"
-          @click="toggleEdit(task)"
-          class="btn-cancel w-100"
-        >Отменить</button>
-        <button
+          :btnName="'Отменить'"
+          :evtName="'toggle-edit'"
+          @toggle-edit="toggleEdit(task)"
+        ></BtnAction>
+        <BtnAction
           v-if="!task.isEditing"
           :disabled="editingEnabled"
-          @click="$emit('remove')"
-          class="btn-remove w-100"
-        >Удалить</button>
+          :btnName="'Удалить'"
+          :evtName="'remove-task'"
+          @remove-task="$emit('remove-task')"
+        ></BtnAction>
       </div>
     </template>
   </li>
 </template>
 
 <script>
+import TextareaEdit from '@/components/TextareaEdit'
+import InputEdit from '@/components/InputEdit'
+import BtnAction from '@/components/BtnAction'
 export default {
+  components: {
+    TextareaEdit, InputEdit, BtnAction
+  },
   props: {
     task: {
       type: Object,
@@ -145,14 +155,7 @@ export default {
         this.setNewParams('', '')
         this.$emit('toggle-edit')
       }
-    },
-    setHeightTextarea (event) {
-      // console.log('setHeightTextarea')
-      const textarea = event.target
-      textarea.style.height = textarea.scrollHeight + 'px'
-      // textarea.style.overflowY = 'hidden'
     }
-
   }
 }
 

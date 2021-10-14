@@ -188,7 +188,7 @@ input[type="checkbox"] + span {
     border-color: #e41e41!important;
 }
 
-.btn-remove, .btn-edit, .btn-cancel{
+.btn-action{
     border: 1px solid #2a2f36;
     font-size: 12px;
     border: 2px solid #2a2f36;
@@ -206,16 +206,12 @@ input[type="checkbox"] + span {
     width: 100%;
 }
 
-.btn-remove:not([disabled]):hover,
-.btn-edit:not([disabled]):hover,
-.btn-cancel:not([disabled]):hover {
+.btn-action:not([disabled]):hover{
     background-color: #535151;
     border-color: #535151;
     cursor: pointer;
 }
-.btn-remove:not([disabled]):focus,
-.btn-edit:not([disabled]):focus,
-.btn-cancel:not([disabled]):focus,
+.btn-action:not([disabled]):focus,
 input[type="checkbox"]:focus + span::before{
     box-shadow: 0px 0px 5px 2px #11a8dc8a;
 }
