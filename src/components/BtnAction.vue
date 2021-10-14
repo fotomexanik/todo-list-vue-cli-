@@ -1,6 +1,6 @@
 <template>
   <button
-    class="btn-action w-100"
+    class="btn"
     @click= "$emit(`${evtName}`)"
   >{{btnName}}</button>
 </template>

@@ -3,26 +3,10 @@
     <div class="header">
       <div class="container">
         <div class="logo">ToDo List</div>
-        <div class="form">
-          <div class="input-group">
-            <input
-              type="text"
-              v-model="valueTitle"
-              @keypress.enter="addTask"
-              :disabled="editingEnabled"
-              placeholder="Название задачи"
-            >
-            <textarea
-              v-model="valueDescription"
-              :disabled="valueTitle === '' ||  editingEnabled"
-              rows="4"
-              placeholder="Описание задачи"
-            ></textarea>
-          </div>
-          <div class="btn-group">
-            <button class="btn" id="btnAddTask" @click="addTask" :disabled="editingEnabled">Добавить задачу</button>
-          </div>
-        </div>
+          <CreateTask
+            :editingEnabled="editingEnabled"
+            @add-task="addTask"
+          ></CreateTask>
       </div>
     </div>
 
@@ -71,6 +55,7 @@
 
 <script>
 import TodoItem from '@/components/TodoItem'
+import CreateTask from '@/components/CreateTask'
 const fakeData = [
   {
     title: 'новая Задача 1. Работа с классами и стилями',
@@ -131,12 +116,12 @@ const fakeData = [
 export default {
   name: 'app-todo',
   components: {
-    TodoItem
+    TodoItem, CreateTask
   },
   data () {
     return {
-      valueTitle: '',
-      valueDescription: '',
+      // valueTitle: '',
+      // valueDescription: '',
       todolist: fakeData
     }
   },
@@ -153,17 +138,16 @@ export default {
     }
   },
   methods: {
-    addTask () {
-      if (this.valueTitle === '') { return };
+    addTask (title, description) {
+      console.log('addTask')
+      if (this.title === '') { return };
       this.todolist.push({
-        title: this.valueTitle,
-        description: this.valueDescription,
+        title: title,
+        description: description,
         id: Math.random(),
         status: false,
         isEditing: false
       })
-      this.valueTitle = ''
-      this.valueDescription = ''
     },
     removeTask (task) {
       console.log('removeTask')

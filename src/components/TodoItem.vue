@@ -3,13 +3,13 @@
     <template v-if="task.status">
       <div class="contents">
         <div class="checkbox-group">
-          <input
-            type="checkbox"
-            @change="task.status = !task.status"
-            :disabled="editingEnabled"
-            checked
-            >
-          <span class="title">{{index+1}}. {{task.title}}</span>
+          <LabelCheckbox
+            :evtName="'toggle-status'"
+            :status="task.status"
+            :editingEnabled="editingEnabled"
+            @toggle-status="task.status = !task.status"
+          ></LabelCheckbox>
+          <span class="size-m">{{index+1}}. {{task.title}}</span>
         </div>
         <p class="description"> {{task.description}} </p>
       </div>
@@ -27,18 +27,20 @@
       <p class="tip" v-if="task.isEditing">Редактирование</p>
       <div class="contents" v-if="!task.isEditing">
         <div class="checkbox-group">
-          <input
-            type="checkbox"
-            @change="task.status = !task.status"
-            :disabled="editingEnabled">
-          <span class="title" @dblclick="!editingEnabled ? toggleEdit(task) : '' ">{{index+1}}. {{task.title}}</span>
+          <LabelCheckbox
+            :evtName="'toggle-status'"
+            :status="task.status"
+            :editingEnabled="editingEnabled"
+            @toggle-status="task.status = !task.status"
+          ></LabelCheckbox>
+          <span class="size-m" @dblclick="!editingEnabled ? toggleEdit(task) : '' ">{{index+1}}. {{task.title}}</span>
         </div>
-        <p class="description" v-bind:id="'description_'+ index"> {{task.description}} </p>
+        <p class="description"> {{task.description}} </p>
       </div>
 
       <div class="contents edit-task" v-if="task.isEditing">
         <div class="input-group d-flex">
-          <span class="title">{{index+1}}.</span>
+          <span class="size-m">{{index+1}}.</span>
             <InputEdit
               :newTitle="newTitle"
               @update:newTitle="newTitle = $event"
@@ -68,6 +70,7 @@
           :btnName="'Изменить'"
           :evtName="'toggle-edit'"
           @toggle-edit="toggleEdit(task)"
+          class="btn-action w-100"
         ></BtnAction>
         <BtnAction
           v-if="task.isEditing"
@@ -75,12 +78,14 @@
           :btnName="'Сохранить'"
           :evtName="'save-edit'"
           @save-edit="saveEdit(task)"
+          class="btn-action w-100"
         ></BtnAction>
         <BtnAction
           v-if="task.isEditing"
           :btnName="'Отменить'"
           :evtName="'toggle-edit'"
           @toggle-edit="toggleEdit(task)"
+          class="btn-action w-100"
         ></BtnAction>
         <BtnAction
           v-if="!task.isEditing"
@@ -88,6 +93,7 @@
           :btnName="'Удалить'"
           :evtName="'remove-task'"
           @remove-task="$emit('remove-task')"
+          class="btn-action w-100"
         ></BtnAction>
       </div>
     </template>
@@ -98,9 +104,10 @@
 import TextareaEdit from '@/components/TextareaEdit'
 import InputEdit from '@/components/InputEdit'
 import BtnAction from '@/components/BtnAction'
+import LabelCheckbox from '@/components/LabelCheckbox'
 export default {
   components: {
-    TextareaEdit, InputEdit, BtnAction
+    TextareaEdit, InputEdit, BtnAction, LabelCheckbox
   },
   props: {
     task: {
