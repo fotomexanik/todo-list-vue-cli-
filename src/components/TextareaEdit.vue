@@ -15,6 +15,7 @@ export default {
       // console.log('updateDescription')
       this.$emit('update:newDescription', event.target.value)
       const textarea = event.target
+      textarea.style.height = 'auto'
       textarea.style.height = textarea.scrollHeight + 'px'
       // textarea.style.overflowY = 'hidden'
     }

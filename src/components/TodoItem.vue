@@ -42,7 +42,7 @@
         <div class="input-group d-flex">
           <span class="size-m">{{index+1}}.</span>
             <InputEdit
-              :newTitle="newTitle"
+              :new-title="newTitle"
               @update:newTitle="newTitle = $event"
               @save-edit="saveEdit(task)"
               @toggle-edit="toggleEdit(task)"
@@ -53,7 +53,7 @@
         </div>
         <div class="input-group d-flex">
           <TextareaEdit
-            :newDescription="newDescription"
+            :new-description="newDescription"
             @update:newDescription="newDescription = $event"
             @toggle-edit="toggleEdit(task)"
             class="edit-description"
@@ -67,31 +67,31 @@
         <BtnAction
           v-if="!task.isEditing"
           :disabled="editingEnabled"
-          :btnName="'Изменить'"
-          :evtName="'toggle-edit'"
+          :btn-name="'Изменить'"
+          :evt-name="'toggle-edit'"
           @toggle-edit="toggleEdit(task)"
           class="btn-action w-100"
         ></BtnAction>
         <BtnAction
           v-if="task.isEditing"
           :disabled="newTitle.trim() === '' || newTitle === task.title && newDescription === task.description  "
-          :btnName="'Сохранить'"
-          :evtName="'save-edit'"
+          :btn-name="'Сохранить'"
+          :evt-name="'save-edit'"
           @save-edit="saveEdit(task)"
           class="btn-action w-100"
         ></BtnAction>
         <BtnAction
           v-if="task.isEditing"
-          :btnName="'Отменить'"
-          :evtName="'toggle-edit'"
+          :btn-name="'Отменить'"
+          :evt-name="'toggle-edit'"
           @toggle-edit="toggleEdit(task)"
           class="btn-action w-100"
         ></BtnAction>
         <BtnAction
           v-if="!task.isEditing"
           :disabled="editingEnabled"
-          :btnName="'Удалить'"
-          :evtName="'remove-task'"
+          :btn-name="'Удалить'"
+          :evt-name="'remove-task'"
           @remove-task="$emit('remove-task')"
           class="btn-action w-100"
         ></BtnAction>

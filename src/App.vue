@@ -4,7 +4,7 @@
       <div class="container">
         <div class="logo">ToDo List</div>
           <CreateTask
-            :editingEnabled="editingEnabled"
+            :editing-enabled="editingEnabled"
             @add-task="addTask"
           ></CreateTask>
       </div>
@@ -22,7 +22,7 @@
             :task="task"
             :index="index"
             :key="task.id"
-            :editingEnabled="editingEnabled"
+            :editing-enabled="editingEnabled"
             :id="'currentTaskEl_' + index"
             :class="{active : task.isEditing }"
             @remove="removeTask(task)"
@@ -42,7 +42,7 @@
             :task="task"
             :index="index"
             :key="task.id"
-            :editingEnabled="editingEnabled"
+            :editing-enabled="editingEnabled"
             :id="'doneTaskEl_' + index"
             @remove-task="removeTask(task)"
           />

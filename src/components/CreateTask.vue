@@ -3,23 +3,23 @@
     <div class="input-group">
       <input
         type="text"
-        v-model="title"
+        v-model.trim="title"
         @keypress.enter="addTask"
         @keyup.27= "setTitle('')"
         :disabled="editingEnabled"
         placeholder="Название задачи"
       >
       <textarea
-        v-model="description"
+        v-model.trim="description"
         @keyup.27= "setDescription('')"
-        :disabled="title.trim() === '' ||  editingEnabled"
+        :disabled="title === '' ||  editingEnabled"
         rows="4"
         placeholder="Описание задачи"
       ></textarea>
     </div>
     <div class="btn-group">
       <BtnAction
-        :disabled="editingEnabled"
+        :disabled="title === '' ||  editingEnabled"
         :btnName="'Добавить задачу'"
         :evtName="'add-task'"
         @add-task="addTask"
